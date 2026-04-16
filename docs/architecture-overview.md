@@ -1,55 +1,66 @@
-# TCRIA — caminho direto de produto técnico para SaaS
+# TCRIA — evolução prática para SaaS no Azure
 
-Hoje o TCRIA parece mais um **produto técnico / pipeline governado** do que um SaaS pronto.
+## O que falta para virar SaaS
 
-Para virar SaaS, a evolução precisa acrescentar explicitamente a camada de serviço:
+Hoje o repositório se comporta mais como um produto técnico / engine governado. Para virar SaaS de verdade, ainda faltam estas camadas:
 
-- hospedagem web contínua;
+- aplicação web online estável;
 - banco persistente;
-- autenticação de usuários;
-- cobrança/plano;
+- login e gestão de usuários;
 - armazenamento de arquivos;
-- observabilidade;
-- deploy previsível.
+- histórico de execuções/auditorias;
+- planos/cobrança;
+- observabilidade e segurança;
+- deploy reprodutível.
 
-## Arquitetura recomendada agora: A + B
+## Arquitetura recomendada no Azure
 
-A melhor decisão neste estágio não é “ou isto ou aquilo”.
-É **A + B**:
+### Fase 1 — colocar no ar rápido
 
-### A) Colocar a API no Azure agora (time-to-online)
+Usar a stack mínima para operação real com baixo custo de complexidade:
 
-Objetivo: colocar a aplicação Python/FastAPI online rápido, com risco controlado.
+- **Azure App Service** para hospedar a API FastAPI;
+- **GitHub Actions** para deploy automático;
+- **Azure Database for PostgreSQL Flexible Server** para persistência;
+- **Azure Storage (Blob)** para PDFs e artefatos;
+- **Application Insights** para logs, métricas e rastreabilidade operacional.
 
-- Hospedar a API em **Azure App Service**.
-- Configurar deploy contínuo com **GitHub Actions**.
-- Publicar uma primeira operação online para validação real de uso.
+A Microsoft mantém um tutorial específico de **FastAPI + PostgreSQL no App Service**, que encaixa bem com a estrutura atual do TCRIA.
 
-### B) Evoluir em seguida para SaaS de verdade
+### Fase 2 — virar SaaS real
 
-Objetivo: transformar a base técnica em plataforma de serviço recorrente.
+Adicionar gradualmente as capacidades de produto:
 
-Próximas capacidades:
+- autenticação de usuários;
+- multi-tenant (cada cliente separado);
+- painel com histórico de casos;
+- fila para processamentos longos;
+- billing;
+- ambientes separados de staging e produção.
 
-1. banco e modelo de dados de produto (execuções, usuários, tenants);
-2. login e gestão de identidade;
-3. billing/plano e limites por conta;
-4. armazenamento durável de arquivos e artefatos;
-5. observabilidade de produção (logs, métricas, alertas);
-6. pipeline de deploy previsível com ambientes e rollback.
+## Minha recomendação prática
 
-## O caminho mais direto
+Sequência sugerida para execução:
 
-1. **Fase imediata:** App Service para FastAPI + GitHub Actions.
-2. **Fase seguinte:** completar a camada SaaS (banco, login, billing e painel).
+1. Subir a API no App Service.
+2. Conectar PostgreSQL.
+3. Guardar uploads e relatórios no Blob Storage.
+4. Configurar deploy via GitHub Actions.
+5. Expor uma UI simples para upload + histórico.
+6. Só depois adicionar cobrança e multiempresa.
 
-Esse caminho reduz o tempo para ficar online sem travar a evolução para um SaaS completo.
+Esse caminho tende a ser mais rápido e mais barato do que iniciar já com microserviços.
+
+- **App Service**: melhor escolha para colocar app Python online rapidamente.
+- **Azure Container Apps**: passa a fazer mais sentido quando houver necessidade de containers customizados, workers separados, jobs e escalabilidade mais avançada.
 
 ## Referências oficiais (Microsoft)
 
-- Quickstart para deploy de app Python (Django/Flask/FastAPI) no App Service:
-  https://learn.microsoft.com/en-us/azure/app-service/quickstart-python
-- Tutorial FastAPI + PostgreSQL no Azure App Service:
+- FastAPI + PostgreSQL no Azure App Service:
   https://learn.microsoft.com/en-us/azure/app-service/tutorial-python-postgresql-app-fastapi
-- Deploy de app Python no App Service com GitHub Actions:
+- Python no Azure App Service (quickstart):
+  https://learn.microsoft.com/en-us/azure/app-service/quickstart-python
+- Deploy no App Service com GitHub Actions (Python):
   https://learn.microsoft.com/en-us/azure/developer/python/python-web-app-github-actions-app-service
+- Application Insights (visão geral):
+  https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview
