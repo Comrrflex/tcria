@@ -1,75 +1,55 @@
-# TCRIA arquitetura de evolução para SaaS
+# TCRIA — caminho direto de produto técnico para SaaS
 
-## Diagnóstico atual
+Hoje o TCRIA parece mais um **produto técnico / pipeline governado** do que um SaaS pronto.
 
-Hoje o TCRIA está mais próximo de um **produto técnico/governado** do que de um SaaS completo:
-
-- pipeline orientado a processamento e governança;
-- execução por CLI/API;
-- geração de artefatos auditáveis;
-- pouca camada de serviço contínuo para usuários finais.
-
-## Camadas que faltam para SaaS real
-
-Para operar como SaaS de forma consistente, a plataforma precisa incorporar explicitamente:
+Para virar SaaS, a evolução precisa acrescentar explicitamente a camada de serviço:
 
 - hospedagem web contínua;
 - banco persistente;
 - autenticação de usuários;
-- cobrança/planos;
+- cobrança/plano;
 - armazenamento de arquivos;
 - observabilidade;
 - deploy previsível.
 
-## Arquitetura recomendada: A + B (não "ou")
+## Arquitetura recomendada agora: A + B
 
-### Fase A — colocar online rápido no Azure
+A melhor decisão neste estágio não é “ou isto ou aquilo”.
+É **A + B**:
 
-Objetivo: publicar a API atual com baixo atrito e ganhar operação real em produção.
+### A) Colocar a API no Azure agora (time-to-online)
 
-- Hospedar a aplicação Python/FastAPI no **Azure App Service**.
-- Configurar deploy contínuo por **GitHub Actions**.
-- Expor endpoints para uso interno/early adopters.
+Objetivo: colocar a aplicação Python/FastAPI online rápido, com risco controlado.
 
-Resultado esperado: sistema online rapidamente, com operação controlada e ciclos curtos de validação.
+- Hospedar a API em **Azure App Service**.
+- Configurar deploy contínuo com **GitHub Actions**.
+- Publicar uma primeira operação online para validação real de uso.
 
-### Fase B — evoluir para SaaS completo
+### B) Evoluir em seguida para SaaS de verdade
 
-Objetivo: transformar o produto técnico em serviço multiusuário comercializável.
+Objetivo: transformar a base técnica em plataforma de serviço recorrente.
 
-Evoluções recomendadas:
+Próximas capacidades:
 
-1. **Dados e persistência**
-   - banco relacional gerenciado (ex.: Azure Database for PostgreSQL);
-   - versionamento e retenção de metadados de execução.
+1. banco e modelo de dados de produto (execuções, usuários, tenants);
+2. login e gestão de identidade;
+3. billing/plano e limites por conta;
+4. armazenamento durável de arquivos e artefatos;
+5. observabilidade de produção (logs, métricas, alertas);
+6. pipeline de deploy previsível com ambientes e rollback.
 
-2. **Identidade e segurança**
-   - login de usuários (OIDC / Microsoft Entra ID B2C ou equivalente);
-   - separação por organização/tenant;
-   - RBAC para operações sensíveis.
+## O caminho mais direto
 
-3. **Arquivos e artefatos**
-   - armazenamento em objeto (ex.: Azure Blob Storage);
-   - trilha de custódia e políticas de retenção.
+1. **Fase imediata:** App Service para FastAPI + GitHub Actions.
+2. **Fase seguinte:** completar a camada SaaS (banco, login, billing e painel).
 
-4. **Billing e planos**
-   - controle de consumo por tenant;
-   - integração de cobrança e limites por plano.
+Esse caminho reduz o tempo para ficar online sem travar a evolução para um SaaS completo.
 
-5. **Observabilidade e confiabilidade**
-   - logs estruturados, métricas e traces;
-   - SLO/SLI, alertas e runbooks.
+## Referências oficiais (Microsoft)
 
-6. **Entrega previsível**
-   - ambientes separados (dev/staging/prod);
-   - migrações de banco automatizadas;
-   - estratégia de rollback.
-
-## Caminho mais direto
-
-A sequência mais pragmática agora é:
-
-1. **A (agora):** publicar a API no Azure App Service para ter presença online imediata.
-2. **B (em seguida):** adicionar as capacidades de SaaS (banco, login, billing, painel e operação contínua).
-
-Essa abordagem reduz time-to-production sem bloquear a construção do modelo SaaS definitivo.
+- Quickstart para deploy de app Python (Django/Flask/FastAPI) no App Service:
+  https://learn.microsoft.com/en-us/azure/app-service/quickstart-python
+- Tutorial FastAPI + PostgreSQL no Azure App Service:
+  https://learn.microsoft.com/en-us/azure/app-service/tutorial-python-postgresql-app-fastapi
+- Deploy de app Python no App Service com GitHub Actions:
+  https://learn.microsoft.com/en-us/azure/developer/python/python-web-app-github-actions-app-service
